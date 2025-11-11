@@ -1,0 +1,28 @@
+# =====================
+# Monorepo Ignore Rules
+# =====================
+
+# Node modules
+skill-boardFend/node_modules/
+skill-boardBend/node_modules/
+
+# Environment files
+skill-boardFend/.env
+skill-boardBend/.env
+*.env
+.env.local
+
+# Build output
+skill-boardFend/build/
+skill-boardBend/dist/
+
+# Logs
+*.log
+
+# Uploads (optional)
+skill-boardBend/uploads/
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
