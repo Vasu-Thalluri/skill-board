@@ -1,10 +1,15 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import DashboardLayout from "./layouts/dashboardLayOut";
+import Dashboard from "./pages/dashboard";
 
 function App() {
-  return <></>;
+  return (
+    <>
+      {/* <h1>Hi Shad-CN</h1> */}
+      <DashboardLayout>
+        <Dashboard />
+      </DashboardLayout>
+    </>
+  );
 }
 
 export default App;
