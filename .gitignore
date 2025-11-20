@@ -13,7 +13,7 @@ skill-boardBend/.env
 .env.local
 
 # Build output
-skill-boardFend/build/
+skill-boardFend/dist/
 skill-boardBend/dist/
 
 # Logs
