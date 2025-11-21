@@ -8,6 +8,7 @@ import {
   LogOut,
   Menu,
 } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Sidebar({ open, setOpen }) {
   return (
@@ -38,10 +39,25 @@ export default function Sidebar({ open, setOpen }) {
 
       {/* Menu Items */}
       <nav className="flex flex-col mt-4 gap-2">
-        <SidebarItem icon={<Home />} label="Dashboard" open={open} />
-        <SidebarItem icon={<BadgeCheck />} label="My Skills" open={open} />
-        <SidebarItem icon={<FolderKanban />} label="My Projects" open={open} />
-        <SidebarItem icon={<Layers />} label="Learning Goals" open={open} />
+        <SidebarItem icon={<Home />} label="Dashboard" open={open} to="/" />
+        <SidebarItem
+          icon={<Layers />}
+          label="Learning Goals"
+          open={open}
+          to="/goals"
+        />
+        <SidebarItem
+          icon={<BadgeCheck />}
+          label="My Skills"
+          open={open}
+          to="/skills"
+        />
+        <SidebarItem
+          icon={<FolderKanban />}
+          label="My Projects"
+          open={open}
+          to="/projects"
+        />
         <SidebarItem icon={<User />} label="Profile" open={open} />
       </nav>
       {/* LOGOUT BUTTON FIXED AT BOTTOM */}
@@ -60,9 +76,10 @@ export default function Sidebar({ open, setOpen }) {
   );
 }
 
-function SidebarItem({ icon, label, open }) {
+function SidebarItem({ icon, label, open, to }) {
   return (
-    <div
+    <Link
+      to={to}
       className={cn(
         "flex items-center gap-3 p-3 rounded-md cursor-pointer hover:bg-gray-100 transition-all w-full",
         open ? "flex-row justify-start" : "flex-col justify-center"
@@ -70,6 +87,6 @@ function SidebarItem({ icon, label, open }) {
     >
       <div className="text-gray-700 text-xl">{icon}</div>
       {open && <span className="font-medium text-gray-800">{label}</span>}
-    </div>
+    </Link>
   );
 }
