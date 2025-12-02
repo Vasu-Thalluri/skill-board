@@ -14,7 +14,7 @@ export default function Sidebar({ open, setOpen }) {
   return (
     <div
       className={cn(
-        "h-screen bg-white border-r shadow-sm transition-all duration-300 flex flex-col",
+        "h-screen bg-background border-r shadow-sm transition-all duration-300 flex flex-col",
         open ? "w-64" : "w-20"
       )}
     >

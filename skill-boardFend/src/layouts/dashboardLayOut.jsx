@@ -11,7 +11,10 @@ export default function DashboardLayout({ children }) {
       <div className="flex-1 flex flex-col">
         {/* <Navbar toggleSidebar={() => setOpen(!open)} /> */}
 
-        <div className="flex-1 overflow-y-auto p-6 transition-all duration-300 bg-gray-50">
+        <div
+          className="flex-1 overflow-y-auto p-6 transition-all duration-300 bg-background
+"
+        >
           {children}
         </div>
       </div>
