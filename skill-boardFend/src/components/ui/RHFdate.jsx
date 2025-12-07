@@ -14,21 +14,36 @@ export default function RHFDate({
   register,
   setValue,
   rules = {},
+  setError = {},
   errors = {},
+  clearErrors,
   placeholder = "Pick a date",
 }) {
   const [selectedDate, setSelectedDate] = useState(null);
+  const today = new Date().setHours(0, 0, 0, 0);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    if (date) {
+      setIsPopoverOpen(false);
+    }
+    if (rules?.required && !date) {
+      setError(name, { type: "required", message: rules.required });
+    } else if (errors) {
+      clearErrors(name);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-1 mb-4">
       {label && <label className="text-sm font-medium">{label}</label>}
 
-      <Popover>
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-start text-left"
+            className="w-full font-normal justify-start text-left"
           >
             {selectedDate ? format(selectedDate, "PPP") : placeholder}
           </Button>
@@ -39,9 +54,10 @@ export default function RHFDate({
             mode="single"
             selected={selectedDate}
             onSelect={(date) => {
-              setSelectedDate(date);
+              handleDateSelect(date);
               setValue(name, date?.toISOString().split("T")[0]); // store yyyy-mm-dd
             }}
+            disabled={(date) => date < today}
             initialFocus
           />
         </PopoverContent>
@@ -50,8 +66,13 @@ export default function RHFDate({
       {/* Hidden input for react-hook-form */}
       <input type="hidden" {...register(name, rules)} />
 
-      {errors[name] && (
-        <p className="text-xs text-red-500">{errors[name]?.message}</p>
+      {errors && (
+        <p
+          className="error-message"
+          style={{ color: "red", fontSize: "0.8rem" }}
+        >
+          {errors.message}
+        </p>
       )}
     </div>
   );

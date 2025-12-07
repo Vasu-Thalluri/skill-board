@@ -15,8 +15,13 @@ export default function RHFInput({
 
       <Input type={type} placeholder={placeholder} {...register(name, rules)} />
 
-      {errors[name] && (
-        <p className="text-xs text-red-500">{errors[name]?.message}</p>
+      {errors.type && (
+        <p
+          className="error-message"
+          style={{ color: "red", fontSize: "0.8rem" }}
+        >
+          {errors.message}
+        </p>
       )}
     </div>
   );
