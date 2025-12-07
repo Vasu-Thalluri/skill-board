@@ -8,7 +8,6 @@ import MyProjects from "./pages/MyProjects";
 function App() {
   return (
     <>
-      {/* <h1>Hi Shad-CN</h1> */}
       <DashboardLayout>
         <Routes>
           <Route path="/" element={<Dashboard />} />

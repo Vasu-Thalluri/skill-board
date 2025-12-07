@@ -20,15 +20,6 @@ export default function RHFSelect({
     fieldState: { error },
   } = useController({ name, control, rules, defaultValue: "" });
 
-  // const handleSelect = (fieldName, value) => {
-  //   //console.log(`${fieldName} and ${value}`);
-  //   setValue(fieldName, value);
-  //   if (rules?.required && !value) {
-  //     setError(name, { type: "required", message: rules.required });
-  //   } else if (errors) {
-  //     clearErrors(name);
-  //   }
-  // };
   return (
     <div className="flex flex-col gap-1 mb-4">
       {label && <label className="text-sm font-medium">{label}</label>}
@@ -51,9 +42,6 @@ export default function RHFSelect({
           ))}
         </SelectContent>
       </Select>
-
-      {/* Needed because shadcn Select does not register itself with react-hook-form
-      <input type="hidden" {...register(name, rules)} /> */}
 
       {error && (
         <p

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -18,7 +17,6 @@ export default function RHFDate({
   disabled = false,
   placeholder = "Pick a date",
 }) {
-  //const [selectedDate, setSelectedDate] = useState(null);
   const today = new Date().setHours(0, 0, 0, 0);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const handleDateSelect = (date) => {
@@ -59,9 +57,6 @@ export default function RHFDate({
           />
         </PopoverContent>
       </Popover>
-
-      {/* Hidden input for react-hook-form
-      <input type="hidden" {...register(name, rules)} /> */}
 
       {error && (
         <p
