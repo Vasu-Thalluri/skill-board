@@ -5,19 +5,23 @@ import RHFSelect from "@/components/ui/RHFselect";
 import RHFDate from "@/components/ui/RHFdate";
 
 const MyGoals = () => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    clearErrors,
-    formState: { errors },
-    setError,
-  } = useForm();
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      goaltitle: "",
+      description: "",
+      targetdate: "",
+      priority: "",
+    },
+  });
   const goalTitleRules = {
     required: "Goal Title is required",
     minLength: {
       value: 2,
       message: "Goal Title must be at least two characters",
+    },
+    pattern: {
+      value: /^[A-Za-z]+$/,
+      message: "Only alphabets are allowed",
     },
   };
   const descriptionRules = {
@@ -25,6 +29,10 @@ const MyGoals = () => {
     minLength: {
       value: 4,
       message: "Description must be at least four characters",
+    },
+    pattern: {
+      value: /^[A-Za-z]+$/,
+      message: "Only alphabets are allowed",
     },
   };
   const targetDateRules = {
@@ -51,7 +59,9 @@ const MyGoals = () => {
     }
     const goalForm = { ...data, priority: priorityID.toString() };
     console.log(goalForm);
-    console.log(priorityID);
+  };
+  const handleCancel = () => {
+    reset();
   };
   return (
     <div className="space-y-4">
@@ -62,48 +72,38 @@ const MyGoals = () => {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="shadow-md border rounded-lg max-w-3xl mx-auto p-4"
+        className="shadow-md border rounded-lg max-w-4xl mx-auto p-4"
       >
         <div className="flex flex-wrap gap-4">
           <RHFInput
             label="GoalTitle"
             name="goaltitle"
-            register={register}
+            control={control}
             rules={goalTitleRules}
-            errors={errors.goaltitle}
             placeholder="your goal"
             type="text"
           />
           <RHFInput
             label="Description"
             name="description"
-            register={register}
+            control={control}
             rules={descriptionRules}
-            errors={errors.description}
             placeholder="description about goal"
             type="text"
           />
           <RHFDate
             label="Target Date"
             name="targetdate"
-            register={register}
-            setValue={setValue}
+            control={control}
             rules={targetDateRules}
-            setError={setError}
-            errors={errors.targetdate}
-            clearErrors={clearErrors}
             placeholder="Pick a date"
           />
           <RHFSelect
             label="Priority"
             name="priority"
+            control={control}
             placeholder="Pick Priority"
-            register={register}
             rules={priorityRules}
-            setError={setError}
-            errors={errors.priority}
-            clearErrors={clearErrors}
-            setValue={setValue}
             options={[
               { value: "Primary", label: "Primary" },
               { value: "Secondary", label: "Secondary" },
@@ -120,6 +120,7 @@ const MyGoals = () => {
           </Button>
           <Button
             type="button"
+            onClick={handleCancel}
             className="px-6 py-2 border-2 border-blue-500 text-blue-600 bg-transparent hover:bg-blue-100"
           >
             Cancel

@@ -7,32 +7,31 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { useController } from "react-hook-form";
 
 export default function RHFDate({
   label,
   name,
-  register,
-  setValue,
+  control,
   rules = {},
-  setError = {},
-  errors = {},
-  clearErrors,
+  disablePast = true,
+  disabled = false,
   placeholder = "Pick a date",
 }) {
-  const [selectedDate, setSelectedDate] = useState(null);
+  //const [selectedDate, setSelectedDate] = useState(null);
   const today = new Date().setHours(0, 0, 0, 0);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    if (date) {
+    const selectedDate = format(date, "yyyy-MM-dd");
+    onChange(selectedDate);
+    if (selectedDate) {
       setIsPopoverOpen(false);
     }
-    if (rules?.required && !date) {
-      setError(name, { type: "required", message: rules.required });
-    } else if (errors) {
-      clearErrors(name);
-    }
   };
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({ name, control, rules, defaultValue: "" });
 
   return (
     <div className="flex flex-col gap-1 mb-4">
@@ -43,35 +42,33 @@ export default function RHFDate({
           <Button
             type="button"
             variant="outline"
+            disabled={disabled}
             className="w-full font-normal justify-start text-left"
           >
-            {selectedDate ? format(selectedDate, "PPP") : placeholder}
+            {value ? format(value, "PPP") : placeholder}
           </Button>
         </PopoverTrigger>
 
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={selectedDate}
-            onSelect={(date) => {
-              handleDateSelect(date);
-              setValue(name, date?.toISOString().split("T")[0]); // store yyyy-mm-dd
-            }}
-            disabled={(date) => date < today}
+            selected={value}
+            onSelect={handleDateSelect}
+            disabled={(date) => disabled || (disablePast && date < today)}
             initialFocus
           />
         </PopoverContent>
       </Popover>
 
-      {/* Hidden input for react-hook-form */}
-      <input type="hidden" {...register(name, rules)} />
+      {/* Hidden input for react-hook-form
+      <input type="hidden" {...register(name, rules)} /> */}
 
-      {errors && (
+      {error && (
         <p
           className="error-message"
           style={{ color: "red", fontSize: "0.8rem" }}
         >
-          {errors.message}
+          {error.message}
         </p>
       )}
     </div>
