@@ -14,10 +14,10 @@ const MyGoals = () => {
     },
   });
   const goalTitleRules = {
-    required: "Goal Title is required",
+    required: "Goal title is required",
     minLength: {
       value: 2,
-      message: "Goal Title must be at least two characters",
+      message: "Goal title must be at least two characters",
     },
     pattern: {
       value: /^[A-Za-z]+$/,
@@ -31,7 +31,7 @@ const MyGoals = () => {
       message: "Description must be at least four characters",
     },
     pattern: {
-      value: /^[A-Za-z]+$/,
+      value: /^[A-Za-z ]+$/,
       message: "Only alphabets are allowed",
     },
   };
