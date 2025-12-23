@@ -1,18 +1,25 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import RHFInput from "@/components/ui/RHFinput";
+import RHFSelect from "@/components/ui/RHFselect";
 import { useState } from "react";
 import UpdateContentModal from "./UpdateContentModal";
 
 const MySkills = () => {
   const [selectedSkill, setSelectedSkill] = useState(null);
-  const skill = { completedContent: 1 };
+  const proficiency = [
+    { value: "Beginner", label: "Beginner" },
+    { value: "Intermediate", label: "Intermediate" },
+    { value: "Advanced", label: "Advanced" },
+  ];
+  const skill = { completedContent: 100 };
   console.log(selectedSkill);
   // const selectedSkill = "React";
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       skillName: "",
       category: "",
+      proficiency: "",
       totalContent: "",
     },
   });
@@ -41,7 +48,9 @@ const MySkills = () => {
       message: "Only numbers allowed",
     },
   };
-
+  const proficiencyRules = {
+    required: "Priority is required",
+  };
   const onSubmit = (data) => {
     //console.log("Goal Data:", data);
     console.log(data);
@@ -82,6 +91,13 @@ const MySkills = () => {
             placeholder="category of skill"
             type="text"
           />
+          <RHFSelect
+            label="Proficiency"
+            name="proficiency"
+            control={control}
+            rules={proficiencyRules}
+            options={proficiency}
+          />
           <RHFInput
             label="Total Content"
             name="totalContent"
@@ -107,7 +123,7 @@ const MySkills = () => {
           </Button>
         </div>
         <div className="text-center">
-          <p>error&success</p>
+          <p></p>
         </div>
       </form>
 
@@ -116,6 +132,7 @@ const MySkills = () => {
           <tr>
             <th className="border p-2">Skill</th>
             <th className="border p-2">Category</th>
+            <th className="border p-2">Proficiency</th>
             <th className="border p-2">Total Content</th>
             <th className="border p-2">Completed Content</th>
             <th className="border p-2">Action</th>
@@ -127,8 +144,9 @@ const MySkills = () => {
           <tr>
             <td className="border p-2">skill.skillName</td>
             <td className="border p-2">skill.category</td>
+            <td className="border p-2">skill.proficiency</td>
             <td className="border p-2">skill.totalContent</td>
-            <td className="border p-2">skill.completedContent</td>
+            <td className="border p-2">{skill.completedContent}</td>
             <td className="border p-2">
               <button
                 className="px-3 py-1 bg-blue-600 text-white rounded"

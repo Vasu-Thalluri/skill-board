@@ -3,8 +3,16 @@ import { Button } from "@/components/ui/button";
 import RHFInput from "@/components/ui/RHFinput";
 import RHFSelect from "@/components/ui/RHFselect";
 import RHFDate from "@/components/ui/RHFdate";
+import axios from "axios";
+import { useState } from "react";
 
 const MyGoals = () => {
+  const [message, setMessage] = useState({ type: "", msg: "" });
+  const priority = [
+    { value: "primary", label: "primary" },
+    { value: "secondary", label: "secondary" },
+    { value: "tertiary", label: "tertiary" },
+  ];
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       goaltitle: "",
@@ -41,24 +49,30 @@ const MyGoals = () => {
   const priorityRules = {
     required: "Priority is required",
   };
-  const onSubmit = (data) => {
-    //console.log("Goal Data:", data);
-    let priorityID;
-    switch (data.priority) {
-      case "Primary":
-        priorityID = 1;
-        break;
-      case "Secondary":
-        priorityID = 2;
-        break;
-      case "Tertiary":
-        priorityID = 3;
-        break;
-      default:
-        priorityID = undefined;
+  const API_URL = import.meta.env.VITE_API_URL;
+  const onSubmit = async (data) => {
+    console.log(data);
+    try {
+      const response = await axios.post(`${API_URL}/goal/create`, data);
+      console.log(response);
+      const success = response.data.success;
+      console.log("id of submitted record", response.data.data.insertId);
+      if (success) {
+        setMessage({ type: "success", msg: response.data.message });
+        console.log(message);
+        setTimeout(() => {
+          setMessage({ type: "", msg: "" });
+          reset();
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+      const errMsg = error.response.data?.error;
+      setMessage({ type: "error", msg: errMsg });
+      setTimeout(() => {
+        setMessage({ type: "", msg: "" });
+      }, 2000);
     }
-    const goalForm = { ...data, priority: priorityID.toString() };
-    console.log(goalForm);
   };
   const handleCancel = () => {
     reset();
@@ -104,11 +118,7 @@ const MyGoals = () => {
             control={control}
             placeholder="Pick Priority"
             rules={priorityRules}
-            options={[
-              { value: "Primary", label: "Primary" },
-              { value: "Secondary", label: "Secondary" },
-              { value: "Tertiary", label: "Tertiary" },
-            ]}
+            options={priority}
           />
         </div>
         <div className="flex mb-6 gap-6 mt-8">
@@ -127,7 +137,11 @@ const MyGoals = () => {
           </Button>
         </div>
         <div className="text-center">
-          <p>error&success</p>
+          {message.msg && (
+            <p style={{ color: message.type === "error" ? "red" : "green" }}>
+              {message.msg}
+            </p>
+          )}
         </div>
       </form>
     </div>
