@@ -2,19 +2,22 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import RHFInput from "@/components/ui/RHFinput";
 import RHFSelect from "@/components/ui/RHFselect";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UpdateContentModal from "./UpdateContentModal";
+import axios from "axios";
 
 const MySkills = () => {
+  const [message, setMessage] = useState({ type: "", msg: "" });
+  const [skills, setSkills] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
   const proficiency = [
     { value: "Beginner", label: "Beginner" },
     { value: "Intermediate", label: "Intermediate" },
     { value: "Advanced", label: "Advanced" },
   ];
   const skill = { completedContent: 100 };
-  console.log(selectedSkill);
-  // const selectedSkill = "React";
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       skillName: "",
@@ -51,18 +54,43 @@ const MySkills = () => {
   const proficiencyRules = {
     required: "Priority is required",
   };
-  const onSubmit = (data) => {
-    //console.log("Goal Data:", data);
-    console.log(data);
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(`${API_URL}/skill/create`, data);
+      const success = response.data.success;
+      if (success) {
+        const successMsg = response.data.message;
+        setMessage({ type: "success", msg: successMsg });
+        setTimeout(() => {
+          setMessage({ type: "", msg: "" });
+          reset();
+        }, 2000);
+      }
+    } catch (error) {
+      const errMsg = error.response.data?.error || error.response.data?.message;
+      setMessage({ type: "error", msg: errMsg });
+      setTimeout(() => {
+        setMessage({ type: "", msg: "" });
+      }, 2000);
+    }
   };
+
+  useEffect(() => {
+    const getAllSkills = async () => {
+      const result = await axios.get(`${API_URL}/skill/get`, {});
+      if (result) {
+        const skillRes = result.data.result;
+        setSkills(skillRes);
+      }
+    };
+    getAllSkills();
+  }, []);
+
   const handleCancel = () => {
     reset();
   };
-  const updateCompletedContent = (cc) => {
-    console.log(cc);
-    console.log("Hi modal");
-    setSelectedSkill((prev) => prev + cc);
-  };
+
   return (
     <div className="space-y-4">
       <div className="bg-gray-200 p-4">
@@ -123,7 +151,11 @@ const MySkills = () => {
           </Button>
         </div>
         <div className="text-center">
-          <p></p>
+          {message.msg && (
+            <p style={{ color: message.type === "error" ? "red" : "green" }}>
+              {message.msg}
+            </p>
+          )}
         </div>
       </form>
 
@@ -140,30 +172,29 @@ const MySkills = () => {
         </thead>
 
         <tbody className="text-center">
-          {/* {skills.map((skill, index) => ( */}
-          <tr>
-            <td className="border p-2">skill.skillName</td>
-            <td className="border p-2">skill.category</td>
-            <td className="border p-2">skill.proficiency</td>
-            <td className="border p-2">skill.totalContent</td>
-            <td className="border p-2">{skill.completedContent}</td>
-            <td className="border p-2">
-              <button
-                className="px-3 py-1 bg-blue-600 text-white rounded"
-                onClick={() => setSelectedSkill(skill)}
-              >
-                Update Content
-              </button>
-            </td>
-          </tr>
-          {/* ))} */}
+          {skills.map((skill, index) => (
+            <tr key={skill.id}>
+              <td className="border p-2">{skill.skillName}</td>
+              <td className="border p-2">{skill.category}</td>
+              <td className="border p-2">{skill.proficiency}</td>
+              <td className="border p-2">{skill.totalContent}</td>
+              <td className="border p-2">{skill.completedContent}</td>
+              <td className="border p-2">
+                <button
+                  className="px-3 py-1 bg-blue-600 text-white rounded"
+                  onClick={() => setSelectedSkill(skill)}
+                >
+                  Update Content
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       {selectedSkill && (
         <UpdateContentModal
           open={!!selectedSkill}
           skill={selectedSkill}
-          onUpdate={updateCompletedContent}
           onClose={() => setSelectedSkill(null)}
         />
       )}

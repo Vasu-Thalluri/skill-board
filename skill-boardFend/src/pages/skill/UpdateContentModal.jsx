@@ -11,17 +11,37 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useState } from "react";
 
-export default function UpdateContentModal({ skill, onUpdate, open, onClose }) {
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: { completedContent: skill.completedContent },
+export default function UpdateContentModal({ skill, open, onClose }) {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      id: skill.id,
+      completedContent: skill.completedContent,
+    },
   });
-  console.log(skill);
-  const submit = (data) => {
-    console.log(data);
-    onUpdate(Number(data.completedContent));
-    reset();
-    //document.getElementById("close-update")?.click();
+  const API_URL = import.meta.env.VITE_API_URL;
+  const [message, setMessage] = useState({ type: "", msg: "" });
+
+  const submit = async (data) => {
+    try {
+      const res = await axios.put(`${API_URL}/skill/update`, data);
+      const success = res.data.success;
+      if (res && success) {
+        const successMsg = res.data.message;
+        setMessage({ type: "success", msg: successMsg });
+        setTimeout(() => {
+          setMessage({ type: "", msg: "" });
+        }, 2000);
+      }
+    } catch (error) {
+      const errMsg = error.response.data.error;
+      setMessage({ type: "error", msg: errMsg });
+      setTimeout(() => {
+        setMessage({ type: "", msg: "" });
+      }, 2000);
+    }
   };
 
   return (
@@ -29,8 +49,12 @@ export default function UpdateContentModal({ skill, onUpdate, open, onClose }) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Update Completed Content</DialogTitle>
-          <DialogDescription>
-            Add the number of completed lessons for this skill.
+          <DialogDescription style={{ color: "white" }}>
+            Add the number of completed lesson or lessons of your{" "}
+            <span style={{ color: "blue" }}>
+              <strong>{skill.skillName}</strong>
+            </span>{" "}
+            skill.
           </DialogDescription>
         </DialogHeader>
 
@@ -52,6 +76,13 @@ export default function UpdateContentModal({ skill, onUpdate, open, onClose }) {
 
             <Button type="submit">Update</Button>
           </DialogFooter>
+          <div className="text-center">
+            {message.msg && (
+              <p style={{ color: message.type === "error" ? "red" : "green" }}>
+                {message.msg}
+              </p>
+            )}
+          </div>
         </form>
       </DialogContent>
     </Dialog>
