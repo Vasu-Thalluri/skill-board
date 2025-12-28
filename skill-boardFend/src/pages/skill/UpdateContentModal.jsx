@@ -14,7 +14,12 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useState } from "react";
 
-export default function UpdateContentModal({ skill, open, onClose }) {
+export default function UpdateContentModal({
+  skill,
+  open,
+  onClose,
+  onSuccess,
+}) {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       id: skill.id,
@@ -35,6 +40,7 @@ export default function UpdateContentModal({ skill, open, onClose }) {
           setMessage({ type: "", msg: "" });
         }, 2000);
       }
+      onSuccess();
     } catch (error) {
       const errMsg = error.response.data.error;
       setMessage({ type: "error", msg: errMsg });
@@ -68,13 +74,12 @@ export default function UpdateContentModal({ skill, open, onClose }) {
           </div>
 
           <DialogFooter>
+            <Button type="submit">Update</Button>
             <DialogTrigger asChild>
               <Button variant="outline" onClick={onClose}>
-                Cancel
+                Close
               </Button>
             </DialogTrigger>
-
-            <Button type="submit">Update</Button>
           </DialogFooter>
           <div className="text-center">
             {message.msg && (

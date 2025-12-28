@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import RHFInput from "@/components/ui/RHFinput";
 import RHFSelect from "@/components/ui/RHFselect";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import UpdateContentModal from "./UpdateContentModal";
 import axios from "axios";
 
@@ -75,17 +75,17 @@ const MySkills = () => {
       }, 2000);
     }
   };
+  const getAllSkills = useCallback(async () => {
+    const result = await axios.get(`${API_URL}/skill/get`, {});
+    if (result) {
+      const skillRes = result.data.data;
+      setSkills(skillRes);
+    }
+  }, []);
 
   useEffect(() => {
-    const getAllSkills = async () => {
-      const result = await axios.get(`${API_URL}/skill/get`, {});
-      if (result) {
-        const skillRes = result.data.result;
-        setSkills(skillRes);
-      }
-    };
     getAllSkills();
-  }, []);
+  }, [getAllSkills]);
 
   const handleCancel = () => {
     reset();
@@ -174,9 +174,15 @@ const MySkills = () => {
         <tbody className="text-center">
           {skills.map((skill, index) => (
             <tr key={skill.id}>
-              <td className="border p-2">{skill.skillName}</td>
-              <td className="border p-2">{skill.category}</td>
-              <td className="border p-2">{skill.proficiency}</td>
+              <td className="border p-2">
+                {skill.skillName.replace(/^./, (char) => char.toUpperCase())}
+              </td>
+              <td className="border p-2">
+                {skill.category.replace(/^./, (char) => char.toUpperCase())}
+              </td>
+              <td className="border p-2">
+                {skill.proficiency.replace(/^./, (char) => char.toUpperCase())}
+              </td>
               <td className="border p-2">{skill.totalContent}</td>
               <td className="border p-2">{skill.completedContent}</td>
               <td className="border p-2">
@@ -196,6 +202,7 @@ const MySkills = () => {
           open={!!selectedSkill}
           skill={selectedSkill}
           onClose={() => setSelectedSkill(null)}
+          onSuccess={getAllSkills}
         />
       )}
     </div>
