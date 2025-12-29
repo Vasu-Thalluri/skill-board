@@ -4,17 +4,20 @@ import { Routes, Route } from "react-router-dom";
 import MySkills from "./pages/skill/MySkills";
 import MyGoals from "./pages/MyGoals";
 import MyProjects from "./pages/MyProjects";
+import SkillsProvider from "./contexts/SkillsContext";
 
 function App() {
   return (
     <>
       <DashboardLayout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/goals" element={<MyGoals />} />
-          <Route path="/skills" element={<MySkills />} />
-          <Route path="/projects" element={<MyProjects />} />
-        </Routes>
+        <SkillsProvider>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/goals" element={<MyGoals />} />
+            <Route path="/skills" element={<MySkills />} />
+            <Route path="/projects" element={<MyProjects />} />
+          </Routes>
+        </SkillsProvider>
       </DashboardLayout>
     </>
   );

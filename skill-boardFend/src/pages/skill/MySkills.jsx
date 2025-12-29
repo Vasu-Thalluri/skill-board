@@ -2,21 +2,25 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import RHFInput from "@/components/ui/RHFinput";
 import RHFSelect from "@/components/ui/RHFselect";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import UpdateContentModal from "./UpdateContentModal";
 import axios from "axios";
+import { SkillsContext } from "@/contexts/SkillsContext";
 
 const MySkills = () => {
   const [message, setMessage] = useState({ type: "", msg: "" });
-  const [skills, setSkills] = useState([]);
+
+  const { skillData, fetchAllSkills } = useContext(SkillsContext);
+
   const [selectedSkill, setSelectedSkill] = useState(null);
+
   const API_URL = import.meta.env.VITE_API_URL;
+
   const proficiency = [
     { value: "Beginner", label: "Beginner" },
     { value: "Intermediate", label: "Intermediate" },
     { value: "Advanced", label: "Advanced" },
   ];
-  const skill = { completedContent: 100 };
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -75,17 +79,10 @@ const MySkills = () => {
       }, 2000);
     }
   };
-  const getAllSkills = useCallback(async () => {
-    const result = await axios.get(`${API_URL}/skill/get`, {});
-    if (result) {
-      const skillRes = result.data.data;
-      setSkills(skillRes);
-    }
-  }, []);
 
   useEffect(() => {
-    getAllSkills();
-  }, [getAllSkills]);
+    fetchAllSkills();
+  }, [fetchAllSkills]);
 
   const handleCancel = () => {
     reset();
@@ -172,7 +169,7 @@ const MySkills = () => {
         </thead>
 
         <tbody className="text-center">
-          {skills.map((skill, index) => (
+          {skillData.map((skill, index) => (
             <tr key={skill.id}>
               <td className="border p-2">
                 {skill.skillName.replace(/^./, (char) => char.toUpperCase())}
@@ -202,7 +199,7 @@ const MySkills = () => {
           open={!!selectedSkill}
           skill={selectedSkill}
           onClose={() => setSelectedSkill(null)}
-          onSuccess={getAllSkills}
+          onSuccess={fetchAllSkills}
         />
       )}
     </div>
