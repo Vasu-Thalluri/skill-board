@@ -22,17 +22,17 @@ export function DashboardCards() {
       icon: <Clock />,
       color: "text-yellow-500",
     },
-    {
-      title: "Skill Progress",
-      value: "+18%",
-      icon: <TrendingUp />,
-      color: "text-orange-500",
-    },
+    // {
+    //   title: "Skill Progress",
+    //   value: "+18%",
+    //   icon: <TrendingUp />,
+    //   color: "text-orange-500",
+    // },
   ];
 
   return (
     <div className="w-full flex justify-center mt-6">
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 place-items-center">
         {data.map((item) => (
           <Card key={item.title} className="p-4 w-40">
             <div className="w-full flex flex-col items-center text-center space-x-4">
