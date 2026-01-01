@@ -39,7 +39,7 @@ export default function Sidebar({ open, setOpen }) {
 
       {/* Menu Items */}
       <nav className="flex flex-col mt-4 gap-2">
-        <SidebarItem icon={<Home />} label="Dashboard" open={open} to="/" />
+        <SidebarItem icon={<Home />} label="Dashboard" open={open} to="/home" />
         <SidebarItem
           icon={<Layers />}
           label="Learning Goals"
