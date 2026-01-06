@@ -3,32 +3,39 @@ import { Card } from "@/components/ui/card";
 import { SkillsContext } from "@/contexts/SkillsContext";
 import { useContext, useEffect } from "react";
 import SkillGrowthDoNut from "@/components/ui/charts/SkillGrowthDoNutChart";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { skillData, fetchAllSkills } = useContext(SkillsContext);
+  const navigate = useNavigate();
   useEffect(() => {
     fetchAllSkills();
   }, []);
-
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
   const chartData = skillData.map((skill) => ({
     name: skill.skillName,
     value: (skill.completedContent / skill.totalContent) * 100,
   }));
-  console.log(chartData);
+  //console.log(chartData);
 
   const totalCompleted = skillData.reduce(
     (sum, s) => sum + s.completedContent,
     0
   );
-  console.log(totalCompleted);
+  //console.log(totalCompleted);
 
   const totalPossible = skillData.reduce((sum, s) => sum + s.totalContent, 0);
-  console.log(totalPossible);
+  //console.log(totalPossible);
 
   const overAllSkillPercent = Math.round(
     (totalCompleted / totalPossible) * 100
   );
-  console.log(overAllSkillPercent);
+  //console.log(overAllSkillPercent);
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold">"My Skills"</h1>

@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useContext } from "react";
 import UpdateContentModal from "./UpdateContentModal";
 import axios from "axios";
 import { SkillsContext } from "@/contexts/SkillsContext";
+import { useNavigate } from "react-router-dom";
 
 const MySkills = () => {
   const [message, setMessage] = useState({ type: "", msg: "" });
@@ -87,7 +88,13 @@ const MySkills = () => {
   const handleCancel = () => {
     reset();
   };
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
   return (
     <div className="space-y-4">
       <div className="bg-gray-200 p-4">

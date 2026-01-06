@@ -4,7 +4,8 @@ import RHFInput from "@/components/ui/RHFinput";
 import RHFSelect from "@/components/ui/RHFselect";
 import RHFDate from "@/components/ui/RHFdate";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const MyGoals = () => {
   const [message, setMessage] = useState({ type: "", msg: "" });
@@ -51,22 +52,20 @@ const MyGoals = () => {
   };
   const API_URL = import.meta.env.VITE_API_URL;
   const onSubmit = async (data) => {
-    console.log(data);
+    //console.log(data);
     try {
       const response = await axios.post(`${API_URL}/goal/create`, data);
-      console.log(response);
+      //console.log(response);
       const success = response.data.success;
-      console.log("id of submitted record", response.data.data.insertId);
       if (success) {
         setMessage({ type: "success", msg: response.data.message });
-        console.log(message);
         setTimeout(() => {
           setMessage({ type: "", msg: "" });
           reset();
         }, 2000);
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       const errMsg = error.response.data?.error;
       setMessage({ type: "error", msg: errMsg });
       setTimeout(() => {
@@ -77,6 +76,13 @@ const MyGoals = () => {
   const handleCancel = () => {
     reset();
   };
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
   return (
     <div className="space-y-4">
       <div className="bg-gray-200 p-4">
