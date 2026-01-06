@@ -4,13 +4,15 @@ import {
   BadgeCheck,
   FolderKanban,
   User,
-  Layers,
   LogOut,
+  Layers,
   Menu,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import logOut from "@/pages/LogOut";
 
 export default function Sidebar({ open, setOpen }) {
+  const logout = logOut();
   return (
     <div
       className={cn(
@@ -63,13 +65,16 @@ export default function Sidebar({ open, setOpen }) {
       {/* LOGOUT BUTTON FIXED AT BOTTOM */}
       <div className="mt-auto w-full p-4">
         <div
+          onClick={logout}
           className={cn(
             "flex items-center gap-3 p-3 rounded-md cursor-pointer hover:bg-gray-100 transition-all",
             open ? "flex-row justify-start" : "flex-col justify-center"
           )}
         >
           <LogOut className="text-gray-700 text-xl" />
-          {open && <span className="font-medium text-gray-800">Logout</span>}
+          {open && (
+            <button className="font-medium text-gray-800">Logout</button>
+          )}
         </div>
       </div>
     </div>

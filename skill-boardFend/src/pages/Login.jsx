@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,12 +9,15 @@ import {
 import RHFInput from "@/components/ui/RHFinput";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: { email: "", password: "" },
   });
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const emailRules = {
     required: "Email is required",
     pattern: {
@@ -30,8 +32,35 @@ export default function Login() {
     //   message: "Please enter a valid email address",
     // },
   };
-  const onSubmit = (data) => {
-    console.log(data);
+  const [message, setMessage] = useState({ type: "", msg: "" });
+  const API_URL = import.meta.env.VITE_API_URL;
+  const onSubmit = async (data) => {
+    //console.log(data);
+    try {
+      const result = await axios.post(`${API_URL}/user/login`, data);
+      //console.log(result);
+      const success = result.data.success;
+      if (success) {
+        const successMessage = result.data.message;
+        setMessage({ type: "success", msg: successMessage });
+        //console.log(result.data.user[0]);
+        localStorage.setItem("token", JSON.stringify(result.data.user[0]));
+        //const token = localStorage.getItem("token");
+        //console.log(token);
+        setTimeout(() => {
+          setMessage({ type: "", msg: "" });
+          navigate("/home");
+          //localStorage.clear();
+        }, 2000);
+      }
+    } catch (error) {
+      //console.log(error);
+      const errMsg = error.response.data?.message;
+      setMessage({ type: "error", msg: errMsg });
+      setTimeout(() => {
+        setMessage({ type: "", msg: "" });
+      }, 2000);
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -78,8 +107,12 @@ export default function Login() {
               </Link>
             </p>
           </div>
-          <div>
-            <p className="text-center">network messages</p>
+          <div className="text-center">
+            {message.msg && (
+              <p style={{ color: message.type === "error" ? "red" : "green" }}>
+                {message.msg}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
