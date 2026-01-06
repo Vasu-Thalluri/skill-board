@@ -23,3 +23,23 @@ export const createUser = async (req, res) => {
     throw error;
   }
 };
+
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new Error("Missing required fields");
+  }
+  const query =
+    "select id, email, password from users where email = ? and password = ?";
+  const values = [email, password];
+  try {
+    const [result] = await db.query(query, values);
+    if (!result.length) {
+      throw new Error("wrong credentials check your email or password");
+    } else {
+      return result;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
